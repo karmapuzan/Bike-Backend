@@ -1,9 +1,10 @@
 {
   "name": "bikerentalsystem",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
     "javascript",
@@ -11,5 +12,10 @@
   ],
   "author": "Pujan Karmacharya",
   "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "nodemon": "3.1.6"
+  },
+  "dependencies": {
+    "bikerentalsystem": "file:"
+  }
 }
