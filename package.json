@@ -16,6 +16,7 @@
     "nodemon": "3.1.6"
   },
   "dependencies": {
-    "bikerentalsystem": "file:"
+    "bikerentalsystem": "file:",
+    "prettier": "^3.3.3"
   }
 }
