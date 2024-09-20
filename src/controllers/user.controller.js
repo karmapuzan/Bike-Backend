@@ -36,9 +36,11 @@ const registerUser = asyncHandler( async (req, res)=>{
 
     const user = await User.create({
         coverImage: coverImage?.url || "", //to check if the image is pass through or not
+        fullname,
         email,
         username : username.toLowerCase(),
         password,
+        
     })
 
     const createUser = await User.findById(user._id).select(
