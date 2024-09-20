@@ -5,15 +5,15 @@ import {uploadOnCloudinary} from "../utils/Cloudnary.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 
 const registerUser = asyncHandler( async (req, res)=>{
-    const {fullname,username, email, password} =req.body
+    const {fullName,username, email, password} =req.body
     console.log("email: ", email );
 
-    if([fullname, username, email, password].some((field)=> 
+    if([fullName, username, email, password].some((field)=> 
         field?.trim() === "")){
             throw new ApiError(400, "All field are requried")
     }
 
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [{username}, {email}]
     })
 
@@ -36,7 +36,7 @@ const registerUser = asyncHandler( async (req, res)=>{
 
     const user = await User.create({
         coverImage: coverImage?.url || "", //to check if the image is pass through or not
-        fullname,
+        fullName,
         email,
         username : username.toLowerCase(),
         password,
