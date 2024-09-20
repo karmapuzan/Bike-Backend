@@ -35,6 +35,9 @@ const userSchema = new Schema({
         type: String,
         required: [true, 'Password is requried']
     },
+    coverImage:{
+        type: String
+    },
     refreshToken:{
         type : String
     }
@@ -46,7 +49,7 @@ const userSchema = new Schema({
 //password encrption 
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next();
-    this.password = bcrypt.hash(this.password, 10)
+    this.password = await bcrypt.hash(this.password, 10)
     next()
 })
 
