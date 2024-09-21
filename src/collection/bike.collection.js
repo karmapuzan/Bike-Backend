@@ -63,7 +63,7 @@ const addBike = AsyncHandler(async (req, res) => {
     price,
     location: loca ? loca._id : null,
     bikeType: bikeTypename._id,
-    bikeImage: image.url,
+    bikeImage: image.url || "",
     status: status || 'available',
     });
 
@@ -121,4 +121,68 @@ const getBikes = AsyncHandler(async (req, res, next) => {
     }
 });
 
-export {addBike, getBikes}
+
+//update bike
+
+const updateBike = AsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { name, serialNumber, description, bikeType, price, location, status } = req.body;
+
+    // Find the bike by ID
+    const bike = await Bike.findById(id);
+    if (!bike) {
+        throw new ApiError(404, "Bike not found");
+    }
+
+    // Check if a new serial number is provided and if it exists
+    if (serialNumber && serialNumber !== bike.serialNumber) {
+        const existingBike = await Bike.findOne({ serialNumber });
+        if (existingBike) {
+            throw new ApiError(400, "Bike with this serial number already exists");
+        }
+    }
+
+    // If location is updated, verify the location exists
+    // let loca = bike.location;
+    // if (location) {
+    //     loca = await Location.findById(location);
+    //     if (!loca) {
+    //         throw new ApiError(400, "Location does not exist");
+    //     }
+    // }
+
+    // Update fields
+    bike.name = name || bike.name;
+    bike.serialNumber = serialNumber || bike.serialNumber;
+    bike.description = description || bike.description;
+    bike.price = price || bike.price;
+    bike.location = loca ? loca._id : bike.location;
+    bike.status = status || bike.status;
+
+    // Save the updated bike
+    const updatedBike = await bike.save();
+
+    res.status(200).json(new ApiResponse(200, updatedBike, "Bike updated successfully"));
+});
+
+//Delete Bikes 
+const deleteBike = AsyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // Find the bike by ID
+    const bike = await Bike.findById(id);
+    if (!bike) {
+        throw new ApiError(404, "Bike not found");
+    }
+
+    // Delete the bike
+    await bike.remove();
+
+    res.status(200).json(new ApiResponse(200, null, "Bike deleted successfully"));
+});
+
+
+
+
+
+export {addBike, getBikes, updateBike, deleteBike}
