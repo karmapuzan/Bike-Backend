@@ -63,8 +63,8 @@ const registerUser = AsyncHandler(async(req, res)=>{
     }
 
     
-    const profilelocal = req.file?.path
-    if(!profilelocal){
+    const profilelocal = req.file?.path;
+    if(!profilelocal.url){
         throw new ApiError(400, "profile local url in not found")
     }
     console.log("file path", profilelocal)

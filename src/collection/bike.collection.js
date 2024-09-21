@@ -10,7 +10,7 @@ import { Location } from "../models/location.model.js"
 
 
 
-const addBike = AsyncHandler(async(req, res) =>{
+const addBike = AsyncHandler(async(req, res,) =>{
     const {name, serialNumber, description,
         bikeType, price, location, status} =req.body
 
@@ -54,18 +54,22 @@ const addBike = AsyncHandler(async(req, res) =>{
         
 
         //upload images
-        const localImage = req.field?.path;
+        //const bikeImageLocalPath = req.files?.bikeImage[0]?.path;
+        // if (!bikeImageLocalPath) {
+        //     console.log("Debug: req.field is:", req.field); // Log the request field to see what's being passed
+        //     throw new ApiError(400, "Local image path is not set");
+        // }
 
-        if (!localImage) {
-            console.log("Debug: req.field is:", req.field); // Log the request field to see what's being passed
-            throw new ApiError(400, "Local image path is not set");
-        }
-
+        // const bikeImageLocalPath = req.file?.path
+        // if(!bikeImageLocalPath){
+        // throw new ApiError(400, "profile local url in not found")
+        // }
+        // console.log("file path", bikeImageLocalPath)
         
-        const image = await uploadToCoudinary(localImage)
-        if(!image.url){
-            throw new ApiError(400, "Imager Url is not Found in the Cloudinary")
-        }
+        // const image = await uploadToCoudinary(bikeImageLocalPath)
+        // if(!image.url){
+        //     throw new ApiError(400, "Imager Url is not Found in the Cloudinary")
+        // }
 
         const uploadbike = await Bike.create({
             name,
@@ -73,8 +77,8 @@ const addBike = AsyncHandler(async(req, res) =>{
             serialNumber,
             price,
             location: Location || null,
-            bikeType:bikename._id,
-            image:image.url,
+            bikeType:name._id,
+            bikeImageLocalPath:image.url,
             status: status || 'available'
         })
 

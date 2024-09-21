@@ -28,7 +28,7 @@ const bikeSchema = new Schema({
         ref: 'Location',
         
     },
-    image: {
+    bikeImage: {
         type: String,
     },
     status: {
