@@ -19,18 +19,14 @@ const bikeSchema = new Schema({
         type: String,
         required: true,
     },
-    pricePerDay: {
+    price: {
         type: Number,
         required: true,
     },
-    currentLocationId: {
+    Location: {
         type: Schema.Types.ObjectId,
         ref: 'Location',
         
-    },
-    isAvailable: {
-        type: Boolean,
-        default: true,
     },
     image: {
         type: String,
@@ -42,9 +38,8 @@ const bikeSchema = new Schema({
     },
 });
 
-// Apply the pagination plugin to the schema
-bikeSchema.plugin(mongooseAggregatePaginate);
 
-const Bike = mongoose.model('Bike', bikeSchema);
 
-module.exports = Bike;
+export const Bike = mongoose.model('Bike', bikeSchema);
+
+
