@@ -29,7 +29,7 @@ const createAccessRefreshToken = async(userId)=>{
     
 
 }
-
+/// -------------------------REGISTER USER------------------------------------------------------------
 const registerUser = AsyncHandler(async(req, res)=>{
     const {name, email, password, address,contact } = req.body
     console.log(req.body)
@@ -77,9 +77,9 @@ const registerUser = AsyncHandler(async(req, res)=>{
     
     console.log("name",name,
         "email",email,
-       "password", password,
+        "password", password,
         "address",address,
-       "contact", contact,"profile",profile.url)
+        "contact", contact,"profile",profile.url)
     let user
     try {
         user = await User.create({
@@ -96,8 +96,6 @@ const registerUser = AsyncHandler(async(req, res)=>{
         
     }
 
- 
-
     const userdetail = await User.findById(user._id)
     if(!userdetail){
         throw new ApiError(400, "user detail is not found")
@@ -110,50 +108,103 @@ const registerUser = AsyncHandler(async(req, res)=>{
     return res.status(200).json(new ApiResponse(200, userdetail, "user register success"))
 })
 
+//=======================================================================================================
 
-const loginUser = AsyncHandler(async(req, res)=>{
+/// -------------------------Login User------------------------------------------------------------
+// const loginUser = AsyncHandler(async(req, res)=>{
 
-    const {email, password} = req.body
+//     const {email, password} = req.body
 
-    if(!email || !password){
-        throw new ApiError(400, "email, password is required")
-    }
+//     if(!email || !password){
+//         throw new ApiError(400, "email, password is required")
+//     }
 
-    const user = await User.findOne({email: email})
-    if(!user){
-        throw new ApiError(400, "user not found")
-    }
-  
+//     const user = await User.findOne({email: email})
+//     if(!user){
+//         throw new ApiError(400, "user not found")
+//     }
 
-    const compare = await user.comparePassword(password)
-    if(!compare){
-        throw new ApiError(400, "error in compare password password doesnot match")
-    }
+//     const compare = await user.comparePassword(password)
+//     if(!compare){
+//         throw new ApiError(400, "error in compare password password doesnot match")
+//     }
 
-    const {accessToken, refreshToken} = await createAccessRefreshToken(user._id)
+//     // const {accessToken, refreshToken} = await createAccessRefreshToken(user._id)
     
-    if(!accessToken || !refreshToken){
-        throw new ApiError(400, "access token and refresh token is not generated")
+//     // if(!accessToken || !refreshToken){
+//     //     throw new ApiError(400, "access token and refresh token is not generated")
+//     // }
+
+//     const createAccessRefreshToken = async (userId) => {
+//         try {
+//             const accessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+//             const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+            
+//             return { accessToken, refreshToken };
+//         } catch (error) {
+//             console.error("Token creation failed:", error);
+//             return { accessToken: null, refreshToken: null }; // Return null or handle it
+//         }
+//     };
+
+//     const loggedInUser = await User.findById(user._id)
+//     if(!loggedInUser){
+//         throw new ApiError(400, "user is not logged in ")
+//     }
+//     // return res.status(200)
+//     // // .cookie("accessToken", accessToken, options)
+//     // // .cookie("refreshToken", refreshToken, options)
+//     // .json(new ApiResponse(200, {user: loggedInUser, accessToken, refreshToken}, "user logged in success"))
+//     return res.status(200).json({
+//         user: loggedInUser,
+//         accessToken,
+//         refreshToken,
+//         message: "User logged in successfully"
+//     });
+
+// })
+
+const loginUser = AsyncHandler(async (req, res) => {
+    const { email, username, password } = req.body;
+
+    if (!username && !email) {
+        throw new ApiError(400, "Username or email is required");
     }
 
-    const loggedInUser = await User.findById(user._id)
-    if(!loggedInUser){
-        throw new ApiError(400, "user is not logged in ")
+    const user = await User.findOne({
+        $or: [{ username }, { email }]
+    });
+
+    if (!user) {
+        throw new ApiError(404, "User does not exist");
     }
 
-    // const options = {
-    //     httpOnly:true,
-    //     secure:true
-    // }
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid user credentials");
+    }
 
-    
+    const { accessToken, refreshToken } = await createAccessRefreshToken(user._id);
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    return res.status(200).json({
+        user: loggedInUser,
+        accessToken,
+        refreshToken,
+        message: "User logged in successfully"
+    });
+});
 
 
-    return res.status(200)
-    // .cookie("accessToken", accessToken, options)
-    // .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, {user: loggedInUser, accessToken, refreshToken}, "user logged in success"))
-})
+
+//=========================================================================================================================
+
 
 
 const logoutUser = AsyncHandler(async(req, res)=>{

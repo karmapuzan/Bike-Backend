@@ -54,7 +54,7 @@ adminSchema.methods.accessTokenGenerator = async function () {
 
     try {
         const token = await jwt.sign({_id: this._id, email:this.email},
-             process.env.ACCESS_TOKEN, {expiresIn:process.env.ACCESS_TOKEN_DATE})
+        process.env.ACCESS_TOKEN, {expiresIn:process.env.ACCESS_TOKEN_DATE})
 
         return token
     
@@ -69,7 +69,7 @@ adminSchema.methods.refreshTokenGenerator = async function () {
 
     try{
         const token = await jwt.sign({_id: this._id},
-             process.env.REFRESH_TOKEN, {expiresIn: process.env.REFRESH_TOKEN_DATE})
+        process.env.REFRESH_TOKEN, {expiresIn: process.env.REFRESH_TOKEN_DATE})
 
         return token
 
