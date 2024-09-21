@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const bikeType = new Schema({
+const bikeTypeSchema = new Schema({
     name:{
         type:String,
         required: true,

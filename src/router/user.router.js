@@ -9,7 +9,7 @@ router.get('/', (req,res)=>{
     res.json({msg: "logout sucess"})
 })
 
-router.route('/register').post(upload.single('profile'),registerUser)
+router.route('/register').post(upload.single('profile'), registerUser);
 router.route('/login').post(loginUser)
 router.route('/user').get(authjwt, getCurrentUser)
 router.route('/logout').post(authjwt,logoutUser)
